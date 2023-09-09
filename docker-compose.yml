@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  django:
+    image: django-image
+    container_name: django-container
+    build:
+      context: .
+      dockerfile: ./.dockerfile/DockerfileDjango # Dockerfileのファイル名
+      args: # Dockerfile に渡す変数
+        - HOME_DIR=${HOME_DIR}
+        - DJANGO_SRC_DIR=${DJANGO_SRC_DIR}
+        - USER_ID=${USER_ID}
+        - USER_NAME=${USER_NAME}
+        - USER_PASSWORD=${USER_PASSWORD}
+        - GROUP_ID=${GROUP_ID}
+        - GROUP_NAME=${GROUP_NAME}
+    volumes:
+      - ./${DJANGO_SRC_DIR}:/${HOME_DIR}/${DJANGO_SRC_DIR}
+    tty: true # コンテナの永続化
+    ports:
+      - 8000:8000 # django
+    # depends_on:
+    #   - db

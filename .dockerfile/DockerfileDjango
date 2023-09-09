@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1
+FROM python:3.11 AS builder
+
+# docker-compose.ymlから渡された変数を ARG を使って明示的に定義
+ARG HOME_DIR DJANGO_SRC_DIR USER_ID USER_NAME USER_PASSWORD GROUP_ID GROUP_NAME
+# ユーザーを作成
+RUN addgroup ${GROUP_NAME} --system --gid ${GROUP_ID} \
+    && adduser ${USER_NAME} --uid ${USER_ID} --ingroup ${GROUP_NAME} \
+    && echo ${USER_NAME}:${USER_PASSWORD} | /usr/sbin/chpasswd
+
+# ビルドに必要なものをコピー
+COPY ./${DJANGO_SRC_DIR}/requirements/ /${HOME_DIR}/${DJANGO_SRC_DIR}/requirements/
+
+WORKDIR /${HOME_DIR}/${DJANGO_SRC_DIR}
+
+# apt-getはスーパーユーザー権限が必要
+RUN apt-get update \
+    # mysqlclientに必要
+    && apt-get -y install pkg-config gcc libmariadb-dev \
+    && export MYSQLCLIENT_LDFLAGS=$(pkg-config --libs mysqlclient) \
+    && export MYSQLCLIENT_CFLAGS=$(pkg-config --cflags mysqlclient)
+
+# ホームディレクトリの所有者をユーザーに変更する
+RUN chown -R ${USER_NAME}:${GROUP_NAME} /${HOME_DIR}/*
+USER ${USER_NAME}
+
+# 必要なものを入れる
+RUN pip3 install --no-cache-dir -r ./requirements/base.txt \
+    && pip3 install --no-cache-dir -r ./requirements/staging.txt
+    # && pip3 install --no-cache-dir -r ./requirements/prod.txt
+
+# コンテナ起動時に実行するコマンド
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
