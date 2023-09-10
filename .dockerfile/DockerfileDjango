@@ -9,25 +9,16 @@ RUN addgroup ${GROUP_NAME} --system --gid ${GROUP_ID} \
     && echo ${USER_NAME}:${USER_PASSWORD} | /usr/sbin/chpasswd
 
 # ビルドに必要なものをコピー
-COPY ./${DJANGO_SRC_DIR}/requirements/ /${HOME_DIR}/${DJANGO_SRC_DIR}/requirements/
+COPY ./${DJANGO_SRC_DIR}/requirements.txt /${HOME_DIR}/${DJANGO_SRC_DIR}/requirements.txt
 
 WORKDIR /${HOME_DIR}/${DJANGO_SRC_DIR}
-
-# apt-getはスーパーユーザー権限が必要
-RUN apt-get update \
-    # mysqlclientに必要
-    && apt-get -y install pkg-config gcc libmariadb-dev \
-    && export MYSQLCLIENT_LDFLAGS=$(pkg-config --libs mysqlclient) \
-    && export MYSQLCLIENT_CFLAGS=$(pkg-config --cflags mysqlclient)
 
 # ホームディレクトリの所有者をユーザーに変更する
 RUN chown -R ${USER_NAME}:${GROUP_NAME} /${HOME_DIR}/*
 USER ${USER_NAME}
 
 # 必要なものを入れる
-RUN pip3 install --no-cache-dir -r ./requirements/base.txt \
-    && pip3 install --no-cache-dir -r ./requirements/staging.txt
-    # && pip3 install --no-cache-dir -r ./requirements/prod.txt
+RUN pip3 install --no-cache-dir -r ./requirements.txt
 
 # コンテナ起動時に実行するコマンド
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python3", "dashboard/manage.py", "runserver", "0.0.0.0:8000"]
