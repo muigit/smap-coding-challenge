@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Sum, Avg
-from .models import AggregateUserDailyConsumption
+from .models import User, AggregateUserDailyConsumption
 from django.utils import timezone
 
 # Create your views here.
@@ -24,7 +24,12 @@ def summary(request):
     return render(request, 'consumption/summary.html', context)
 
 
-def detail(request):
+def detail(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    date_wise_consumption_data = AggregateUserDailyConsumption.objects.filter(user=user)
+
     context = {
+        'user': user,
+        'date_wise_consumption_data': date_wise_consumption_data,
     }
     return render(request, 'consumption/detail.html', context)
