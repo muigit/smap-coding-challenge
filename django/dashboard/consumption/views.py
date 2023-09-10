@@ -10,6 +10,7 @@ from django.utils import timezone
 
 
 def summary(request):
+    users = User.objects.all()
     # 全ユーザーの日付別の合計と平均消費データを取得
     date_wise_consumption_data = AggregateUserDailyConsumption.objects.values('date').annotate(
         total_consumption=Sum('total_consumption'),
@@ -18,6 +19,7 @@ def summary(request):
 
     # テンプレートコンテキストにデータを渡す
     context = {
+        'users': users,
         'date_wise_consumption_data': date_wise_consumption_data,
     }
 

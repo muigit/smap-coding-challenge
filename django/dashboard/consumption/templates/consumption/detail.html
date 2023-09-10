@@ -23,9 +23,9 @@
   <tr>
     <th>日付</th>
     <th>合計消費量 (Wh)</th>
-    <th>平均消費量 (Wh)</th>
+    <th>30分間の平均消費量 (Wh)</th>
   </tr>
-  {% for data in date_wise_consumption_data %}
+  {% for data in date_wise_consumption_data|dictsortreversed:"date" %}
   <tr>
     <td>{{ data.date|date:"Y-m-d" }}</td>
     <td>{{ data.total_consumption|intcomma }}</td>
@@ -68,7 +68,7 @@
       data: {
           labels: dates,
           datasets: [{
-              label: '平均消費量 (Wh)',
+              label: '30分間の平均消費量 (Wh)',
               data: averageConsumption,
               borderColor: 'green',
               backgroundColor: 'rgba(0, 255, 0, 0.2)',
