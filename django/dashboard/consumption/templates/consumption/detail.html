@@ -1,4 +1,6 @@
 {% extends 'consumption/layout.html' %} {% load humanize %} {% block content %}
+<a href="{% url 'summary' %}">Summaryに戻る</a>
+
 <h1>Detail - User({{ user.id }})</h1>
 
 <div>
