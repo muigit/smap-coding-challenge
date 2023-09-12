@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from .helpers import generate_random_token
 
 class User(models.Model):
   id = models.IntegerField(primary_key=True)
   area = models.CharField(max_length=2, db_index=True)
   tariff = models.CharField(max_length=2, db_index=True)
+  token = models.CharField(max_length=32, default=generate_random_token, unique=True)
 
 class Consumption(models.Model):
   datetime = models.DateTimeField(db_index=True)
