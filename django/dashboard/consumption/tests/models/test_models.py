@@ -3,12 +3,19 @@ from consumption.models import User, Consumption, AggregateUserDailyConsumption
 from datetime import datetime
 
 class UserModelTestCase(TestCase):
-  def test_user_creation(self):
-    user = User.objects.create(id=1, area="a1", tariff="t1")
-    self.assertEqual(user.id, 1)
-    self.assertEqual(user.area, "a1")
-    self.assertEqual(user.tariff, "t1")
+  def setUp(self):
+    self.user1 = User.objects.create(id=1, area="a1", tariff="t1")
+    self.user2 = User.objects.create(id=2, area="a2", tariff="t2")
 
+  def test_user_creation(self):
+    self.assertEqual(self.user1.id, 1)
+    self.assertEqual(self.user1.area, "a1")
+    self.assertEqual(self.user1.tariff, "t1")
+    self.assertTrue(self.user1.token)
+
+  # トークンが一意であること
+  def test_unique_token_generation(self):
+    self.assertNotEqual(self.user1.token, self.user2.token)
 
 class ConsumptionModelTestCase(TestCase):
     def setUp(self):
