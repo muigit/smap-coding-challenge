@@ -68,8 +68,11 @@ class Command(BaseCommand):
                         datetime_str = row['datetime']
                         datetime_obj = pd.to_datetime(datetime_str, format='%Y-%m-%d %H:%M:%S')
 
+                        # タイムゾーン情報を含める
+                        datetime_obj_with_tz = timezone.make_aware(datetime_obj)
+
                         consumption_data_to_insert.append(
-                            Consumption(datetime=datetime_obj, consumption=row['consumption'], user_id=user_id)
+                            Consumption(datetime=datetime_obj_with_tz, consumption=row['consumption'], user_id=user_id)
                         )
 
             # バルクインサートを実行
