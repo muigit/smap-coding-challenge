@@ -13,8 +13,7 @@ class URLPatternTestCase(TestCase):
         self.assertTemplateUsed(response, 'consumption/summary.html')
 
     def test_detail_url(self):
-        user_id = 1
-        url = reverse('detail', args=[user_id])
+        url = reverse('detail', args=[self.user1.token])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'consumption/detail.html')

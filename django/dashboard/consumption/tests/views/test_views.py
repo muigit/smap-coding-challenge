@@ -69,7 +69,7 @@ class DetailViewTestCase(TestCase):
 
     def test_detail_view(self):
         # detailビューを呼び出し（ユーザーIDを指定）
-        response = self.client.get(reverse('detail', args=(self.user1.id,)))
+        response = self.client.get(reverse('detail', args=(self.user1.token,)))
 
         # 正しいHTTPステータスコード（200 OK）が返されることを確認
         self.assertEqual(response.status_code, 200)

@@ -38,7 +38,7 @@
     <td>{{ user.id }}</td>
     <td>{{ user.tariff }}</td>
     <td>{{ user.area }}</td>
-    <td><a href="{% url 'detail' user_id=user.id %}">詳細</a></td>
+    <td><a href="{% url 'detail' token=user.token %}">詳細</a></td>
   </tr>
   {% endfor %}
 </table>

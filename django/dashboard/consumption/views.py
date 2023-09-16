@@ -22,8 +22,8 @@ def summary(request):
 
     return render(request, 'consumption/summary.html', context)
 
-def detail(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+def detail(request, token):
+    user = get_object_or_404(User, token=token)
     date_wise_consumption_data = AggregateUserDailyConsumption.objects.filter(user=user)
 
     context = {
