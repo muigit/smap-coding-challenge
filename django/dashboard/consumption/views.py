@@ -6,9 +6,6 @@ from django.db.models import Sum, Avg
 from .models import User, AggregateUserDailyConsumption
 from django.utils import timezone
 
-# Create your views here.
-
-
 def summary(request):
     users = User.objects.all()
     # 全ユーザーの日付別の合計と平均消費データを取得
@@ -24,7 +21,6 @@ def summary(request):
     }
 
     return render(request, 'consumption/summary.html', context)
-
 
 def detail(request, user_id):
     user = get_object_or_404(User, id=user_id)
